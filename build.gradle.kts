@@ -2,6 +2,7 @@ import com.jfrog.bintray.gradle.BintrayExtension
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import de.gliderpilot.gradle.semanticrelease.GithubRepo
 import de.gliderpilot.gradle.semanticrelease.SemanticReleaseChangeLogService
+import de.gliderpilot.gradle.semanticrelease.SemanticReleaseCheckBranch
 import org.ajoberstar.gradle.git.release.semver.ChangeScope
 
 buildscript {
@@ -24,6 +25,10 @@ semanticRelease {
 
         repo(closureOf<GithubRepo> {
             setGhToken(System.getenv("GH_TOKEN"))
+        })
+
+        releaseBranches (closureOf<SemanticReleaseCheckBranch>{
+            include("vanguard")
         })
 
         changeScope = KotlinClosure1<org.ajoberstar.grgit.Commit, ChangeScope>({
