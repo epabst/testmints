@@ -213,6 +213,27 @@ class TestMintsTest {
             }
 
             @Test
+            fun wrapperFunctionProvideSharedContextAlso() = setup(object {
+                val calls = mutableListOf<Steps>()
+                fun templateSetup() = calls.add(Steps.TemplateSetup).let { Unit }
+                fun templateTeardown() = calls.add(Steps.TemplateTeardown).let { Unit }
+                val customSetup = testTemplate(wrapper = { runTest: (sharedContext: Int) -> Unit ->
+                    templateSetup()
+                    runTest(17)
+                    templateTeardown()
+                })
+
+                fun testThatSucceeds() = customSetup(object {}) { calls.add(Steps.Setup) }
+                        .exercise { calls.add(Steps.Exercise) }
+                        .verify { calls.add(Steps.Verify) }
+
+            }) exercise {
+                testThatSucceeds()
+            } verify {
+                assertEquals(correctOrder - Steps.Teardown, calls)
+            }
+
+            @Test
             fun whenWrapperFunctionDoesNotCallTheTestTheTestWillFail() = setup(object {
                 val customSetup = testTemplate(wrapper = {})
 
