@@ -24,7 +24,7 @@ interface StandardMintDispatcher : ReporterProvider {
         sharedTeardown(sc)
     }
 
-    fun testTemplate(wrapper: (() -> Unit) -> Unit): TestTemplate<Unit> = TestTemplate(reporter) {
+    fun testTemplateSimple(wrapper: (() -> Unit) -> Unit): TestTemplate<Unit> = TestTemplate(reporter) {
         wrapper { it(Unit) }
     }
 
